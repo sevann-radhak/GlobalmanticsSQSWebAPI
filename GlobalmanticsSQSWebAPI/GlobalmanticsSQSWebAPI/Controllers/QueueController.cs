@@ -1,4 +1,5 @@
-﻿using GlobalmanticsSQSWebAPI.Interfaces;
+﻿using Amazon.SQS.Model;
+using GlobalmanticsSQSWebAPI.Interfaces;
 using GlobalmanticsSQSWebAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
@@ -19,9 +20,9 @@ namespace GlobalmanticsSQSWebAPI.Controllers
         [Route("SendMessage")]
         public async Task<IActionResult> SendMessage(TicketRequest dto)
         {
-            var response = await _sQSService.SendMessageToQueueAsync(dto);
+            SendMessageResponse response = await _sQSService.SendMessageToQueueAsync(dto);
 
-            if(response == null)
+            if (response == null)
             {
                 return BadRequest();
             }
