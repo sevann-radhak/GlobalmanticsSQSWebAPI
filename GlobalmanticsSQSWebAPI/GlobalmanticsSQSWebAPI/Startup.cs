@@ -1,16 +1,13 @@
+using Amazon.SQS;
+using GlobalmanticsSQSWebAPI.Interfaces;
+using GlobalmanticsSQSWebAPI.Models;
+using GlobalmanticsSQSWebAPI.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace GlobalmanticsSQSWebAPI
 {
@@ -26,12 +23,16 @@ namespace GlobalmanticsSQSWebAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
+            services.AddAWSService<IAmazonSQS>(Configuration.GetAWSOptions());
+            services.AddSingleton<ISQSService, SQSService>();
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "GlobalmanticsSQSWebAPI", Version = "v1" });
             });
+            
+            services.AddMvc().AddJsonOptions(options => { options.JsonSerializerOptions.WriteIndented = true; });
+            services.Configure<AWS>(Configuration.GetSection("AWS"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
